@@ -40,17 +40,22 @@ API Node.js qui utilise Claude (via Bytez.js) pour traiter des requêtes textuel
 
 ## Fonctionnalités
 
-### Historique de conversation
+### Historique de conversation (Claude)
 - L'API garde l'historique des conversations par `uid`
 - Permet des discussions continues avec contexte
 - Claude se souvient des images et messages précédents dans la conversation
 - Stockage en mémoire (Map JavaScript)
 - L'historique persiste pendant l'exécution du serveur
 
-### Analyse d'images
+### Analyse d'images (Claude)
 - Support des images via URL
 - Claude peut analyser et discuter des images
 - Le contexte de l'image est conservé dans la conversation
+
+### Embeddings (MiniLM)
+- Génération de vecteurs d'embeddings pour du texte
+- Utilise le modèle sentence-transformers/all-MiniLM-L6-v2
+- Utile pour la recherche sémantique et la similarité de texte
 
 ## Endpoints
 
@@ -70,6 +75,18 @@ Endpoint principal qui envoie un prompt à Claude et retourne la réponse. **Gar
 **Paramètres optionnels :**
 - `imageurl` : URL de l'image à analyser
 - `reset` : Réinitialiser la conversation (true/1)
+
+### GET /minilm
+Endpoint pour générer des embeddings avec le modèle all-MiniLM-L6-v2 (Sentence Transformers).
+
+**Paramètres requis :**
+- `prompt` : Texte à convertir en embedding
+- `uid` : Identifiant utilisateur
+
+**Exemple :**
+```
+GET /minilm?prompt=Hello World&uid=123
+```
 
 **Exemples d'utilisation :**
 

@@ -177,6 +177,59 @@ app.get('/reset', (req, res) => {
   });
 });
 
+// Route GET /minilm - Utilise le modèle all-MiniLM-L6-v2 pour embeddings
+app.get('/minilm', async (req, res) => {
+  try {
+    const { prompt, uid } = req.query;
+
+    if (!prompt) {
+      return res.status(400).json({
+        error: 'Le paramètre "prompt" est requis'
+      });
+    }
+
+    if (!uid) {
+      return res.status(400).json({
+        error: 'Le paramètre "uid" est requis'
+      });
+    }
+
+    console.log(`[${uid}] Traitement avec MiniLM: "${prompt}"`);
+
+    const model = sdk.model('sentence-transformers/all-MiniLM-L6-v2');
+
+    const { error, output } = await model.run(prompt);
+
+    if (error) {
+      console.error(`[${uid}] Erreur from MiniLM:`, error);
+      return res.status(500).json({
+        error: 'Erreur lors de l\'appel à MiniLM',
+        details: error
+      });
+    }
+
+    console.log(`[${uid}] Réponse reçue de MiniLM`);
+
+    const response = {
+      [`✅ ${toBold('Statut')}`]: 'Embedding généré avec succès',
+      [`👤 ${toBold('Utilisateur')}`]: uid,
+      [`📝 ${toBold('Votre texte')}`]: prompt,
+      [`🤖 ${toBold('Modele')}`]: 'all-MiniLM-L6-v2 (Sentence Transformers)',
+      [`📊 ${toBold('Output')}`]: output,
+      [`⏱️ ${toBold('Timestamp')}`]: new Date().toISOString()
+    };
+
+    res.json(response);
+
+  } catch (err) {
+    console.error('Erreur:', err);
+    res.status(500).json({
+      error: 'Erreur interne du serveur',
+      message: err.message
+    });
+  }
+});
+
 // Route API info en JSON
 app.get('/api-info', (req, res) => {
   const activeConvs = conversationHistory.size;
