@@ -41,7 +41,3 @@ externalPort = 3000
 
 [userenv.shared]
 BYTEZ_API_KEY = "ddcf9e6a4a09a13065f9ac739cbb872d"
-
-[deployment]
-deploymentTarget = "autoscale"
-run = ["npm", "start"]

@@ -34,13 +34,27 @@ API Node.js qui utilise Claude (via Bytez.js) pour traiter des requêtes textuel
 ### Port
 - Le serveur écoute sur le port **5000** (0.0.0.0:5000)
 
+## Fonctionnalités
+
+### Historique de conversation
+- L'API garde l'historique des conversations par `uid`
+- Permet des discussions continues avec contexte
+- Claude se souvient des images et messages précédents dans la conversation
+- Stockage en mémoire (Map JavaScript)
+- L'historique persiste pendant l'exécution du serveur
+
+### Analyse d'images
+- Support des images via URL
+- Claude peut analyser et discuter des images
+- Le contexte de l'image est conservé dans la conversation
+
 ## Endpoints
 
 ### GET /
 Affiche les informations sur l'API et les endpoints disponibles.
 
 ### GET /claude
-Endpoint principal qui envoie un prompt à Claude et retourne la réponse. Supporte l'analyse d'images.
+Endpoint principal qui envoie un prompt à Claude et retourne la réponse. **Garde l'historique de conversation**.
 
 **Paramètres requis :**
 - `prompt` : Texte à envoyer à Claude
@@ -48,36 +62,50 @@ Endpoint principal qui envoie un prompt à Claude et retourne la réponse. Suppo
 
 **Paramètres optionnels :**
 - `imageurl` : URL de l'image à analyser
+- `reset` : Réinitialiser la conversation (true/1)
 
 **Exemples d'utilisation :**
 
-1. Message texte simple :
+1. Démarrer une conversation :
 ```
 GET /claude?prompt=bonjour&uid=123
 ```
 
-2. Analyse d'image avec description :
+2. Analyser une image :
 ```
 GET /claude?prompt=Décrivez bien cette photo&uid=123&imageurl=https://example.com/photo.jpg
 ```
 
-**Réponse type (texte simple) :**
+3. Continuer la discussion sur l'image :
+```
+GET /claude?prompt=Quelle était la couleur dominante dans cette photo?&uid=123
+```
+
+4. Réinitialiser et démarrer une nouvelle conversation :
+```
+GET /claude?prompt=bonjour&uid=123&reset=true
+```
+
+**Réponse type :**
 ```json
 {
   "uid": "123",
-  "prompt": "bonjour",
-  "response": "Bonjour ! Comment puis-je vous aider aujourd'hui ?"
+  "prompt": "Quelle était la couleur dominante?",
+  "response": "La couleur dominante dans la photo était le bleu...",
+  "conversation_length": 4,
+  "imageurl": "https://example.com/photo.jpg"
 }
 ```
 
-**Réponse type (avec image) :**
-```json
-{
-  "uid": "123",
-  "prompt": "Décrivez bien cette photo",
-  "imageurl": "https://example.com/photo.jpg",
-  "response": "Cette photo montre..."
-}
+### GET /reset
+Réinitialise l'historique de conversation pour un utilisateur spécifique.
+
+**Paramètres requis :**
+- `uid` : Identifiant utilisateur
+
+**Exemple :**
+```
+GET /reset?uid=123
 ```
 
 ## Workflow Replit

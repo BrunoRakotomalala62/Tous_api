@@ -25,11 +25,11 @@ npm start
 
 Le serveur démarre sur le port 5000.
 
-### Endpoint disponible
+### Endpoints disponibles
 
 #### GET /claude
 
-Envoie un message à Claude et retourne la réponse. Supporte l'analyse d'images via URL.
+Envoie un message à Claude et retourne la réponse. **Garde l'historique de conversation par utilisateur** pour permettre des discussions continues. Supporte l'analyse d'images via URL.
 
 **Paramètres requis :**
 - `prompt` : Le texte à envoyer à Claude
@@ -37,6 +37,7 @@ Envoie un message à Claude et retourne la réponse. Supporte l'analyse d'images
 
 **Paramètres optionnels :**
 - `imageurl` : URL de l'image à analyser
+- `reset` : Réinitialiser la conversation (true ou 1)
 
 **Exemples :**
 
@@ -50,23 +51,52 @@ GET /claude?prompt=bonjour&uid=123
 GET /claude?prompt=Décrivez bien cette photo&uid=123&imageurl=https://example.com/photo.jpg
 ```
 
+3. Continuer la discussion sur l'image :
+```
+GET /claude?prompt=Quelle était la couleur principale?&uid=123
+```
+
+4. Nouvelle conversation :
+```
+GET /claude?prompt=bonjour&uid=123&reset=true
+```
+
 **Réponse :**
 ```json
 {
   "uid": "123",
   "prompt": "bonjour",
   "response": "Réponse de Claude...",
+  "conversation_length": 2,
   "imageurl": "https://example.com/photo.jpg"
 }
 ```
 
-### Route de base
+#### GET /reset
 
+Réinitialise l'historique de conversation pour un utilisateur.
+
+**Paramètres requis :**
+- `uid` : Identifiant utilisateur
+
+**Exemple :**
 ```
-GET /
+GET /reset?uid=123
 ```
+
+#### GET /
 
 Affiche les informations sur l'API et les endpoints disponibles.
+
+## Historique de conversation
+
+L'API garde automatiquement l'historique des conversations par `uid`. Cela permet :
+
+- De continuer une discussion sans répéter le contexte
+- De poser des questions sur une image partagée précédemment
+- D'avoir des conversations naturelles avec Claude
+
+**Note :** L'historique est stocké en mémoire et sera perdu lors du redémarrage du serveur.
 
 ## Modèle utilisé
 
