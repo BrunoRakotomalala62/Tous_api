@@ -68,8 +68,13 @@ app.get('/claude', async (req, res) => {
         }
       ];
     } else {
-      // Sinon, utiliser juste le texte
-      messageContent = prompt;
+      // Utiliser format tableau pour le texte simple aussi
+      messageContent = [
+        {
+          type: 'text',
+          text: prompt
+        }
+      ];
     }
 
     // Ajouter le nouveau message à l'historique
@@ -92,10 +97,16 @@ app.get('/claude', async (req, res) => {
     }
 
     // Ajouter le message utilisateur et la réponse à l'historique
+    // Normaliser la réponse au format tableau aussi
     history.push(userMessage);
     history.push({
       role: 'assistant',
-      content: output
+      content: [
+        {
+          type: 'text',
+          text: output
+        }
+      ]
     });
 
     // Retourner la réponse
