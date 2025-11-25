@@ -14,8 +14,12 @@ API Node.js qui utilise Claude (via Bytez.js) pour traiter des requêtes textuel
 ### Structure du projet
 ```
 .
-├── server.js          # Serveur Express avec route /claude
+├── server.js          # Serveur Express avec routes API
 ├── package.json       # Dépendances Node.js
+├── vercel.json        # Configuration pour déploiement Vercel
+├── public/
+│   ├── index.html     # Page d'accueil HTML dynamique
+│   └── styles.css     # Styles CSS avec animations
 ├── .gitignore         # Fichiers à exclure de Git
 └── README.md          # Documentation
 ```
@@ -51,7 +55,10 @@ API Node.js qui utilise Claude (via Bytez.js) pour traiter des requêtes textuel
 ## Endpoints
 
 ### GET /
-Affiche les informations sur l'API et les endpoints disponibles.
+Affiche la page d'accueil HTML avec design dynamique et coloré (public/index.html).
+
+### GET /api-info
+Affiche les informations sur l'API et les endpoints disponibles en format JSON.
 
 ### GET /claude
 Endpoint principal qui envoie un prompt à Claude et retourne la réponse. **Garde l'historique de conversation**.

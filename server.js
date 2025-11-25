@@ -14,6 +14,9 @@ if (!BYTEZ_API_KEY) {
 
 const sdk = new Bytez(BYTEZ_API_KEY);
 
+// Servir les fichiers statiques depuis le dossier public
+app.use(express.static('public'));
+
 // Stockage de l'historique des conversations par uid
 const conversationHistory = new Map();
 
@@ -174,8 +177,8 @@ app.get('/reset', (req, res) => {
   });
 });
 
-// Route de base pour vérifier que l'API fonctionne
-app.get('/', (req, res) => {
+// Route API info en JSON
+app.get('/api-info', (req, res) => {
   const activeConvs = conversationHistory.size;
   
   res.json({

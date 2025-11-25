@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Tous_api - Claude AI via Bytez</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="hero">
+            <div class="hero-content">
+                <h1 class="title">🤖 API Tous_api</h1>
+                <p class="subtitle">Claude AI via Bytez - Analyse d'images et conversations intelligentes</p>
+            </div>
+            <div class="animated-bg"></div>
+        </header>
+
+        <section class="features">
+            <div class="feature-card">
+                <div class="icon">🧠</div>
+                <h3>IA Puissante</h3>
+                <p>Claude 3 Haiku - Modèle rapide et intelligent</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🖼️</div>
+                <h3>Analyse d'Images</h3>
+                <p>Compréhension et description d'images</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">💬</div>
+                <h3>Conversations</h3>
+                <p>Historique contextuel par utilisateur</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">⚡</div>
+                <h3>Rapide</h3>
+                <p>Réponses en temps réel</p>
+            </div>
+        </section>
+
+        <section class="usage">
+            <h2>📡 Utilisation de l'API</h2>
+            
+            <div class="endpoint">
+                <h3>GET /claude</h3>
+                <p class="description">Endpoint principal pour envoyer des prompts à Claude</p>
+                
+                <div class="params">
+                    <h4>Paramètres requis :</h4>
+                    <ul>
+                        <li><code>prompt</code> - Votre question ou instruction</li>
+                        <li><code>uid</code> - Identifiant utilisateur unique</li>
+                    </ul>
+                </div>
+
+                <div class="params">
+                    <h4>Paramètres optionnels :</h4>
+                    <ul>
+                        <li><code>imageurl</code> - URL de l'image à analyser</li>
+                        <li><code>reset</code> - true/1 pour réinitialiser la conversation</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="examples">
+                <h3>✨ Exemples d'utilisation</h3>
+                
+                <div class="example-card">
+                    <h4>1. Message simple</h4>
+                    <code>/claude?prompt=bonjour&uid=123</code>
+                    <a href="/claude?prompt=bonjour&uid=demo" class="try-btn" target="_blank">Essayer</a>
+                </div>
+
+                <div class="example-card highlight">
+                    <h4>2. Analyser une image (Chat)</h4>
+                    <code>/claude?prompt=Décris cette photo en détail&uid=demo&imageurl=https://upload.wikimedia.org/wikipedia/commons/1/15/Cat_August_2010-4.jpg</code>
+                    <a href="/claude?prompt=Décris cette photo en détail&uid=demo&imageurl=https://upload.wikimedia.org/wikipedia/commons/1/15/Cat_August_2010-4.jpg" class="try-btn primary" target="_blank">🖼️ Essayer avec l'image</a>
+                </div>
+
+                <div class="example-card">
+                    <h4>3. Question de suivi</h4>
+                    <code>/claude?prompt=Quelle était la couleur dominante?&uid=demo</code>
+                    <a href="/claude?prompt=Quelle était la couleur dominante?&uid=demo" class="try-btn" target="_blank">Essayer</a>
+                </div>
+
+                <div class="example-card">
+                    <h4>4. Réinitialiser la conversation</h4>
+                    <code>/reset?uid=demo</code>
+                    <a href="/reset?uid=demo" class="try-btn" target="_blank">Essayer</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="api-info">
+            <h2>📊 Informations</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-label">Port</div>
+                    <div class="info-value">5000</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">Modèle</div>
+                    <div class="info-value">Claude 3 Haiku</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">Format</div>
+                    <div class="info-value">JSON</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">Statut</div>
+                    <div class="info-value status-online">✅ En ligne</div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>Propulsé par <strong>Claude AI</strong> via <strong>Bytez.js</strong></p>
+        </footer>
+    </div>
+</body>
+</html>
