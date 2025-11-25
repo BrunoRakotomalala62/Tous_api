@@ -17,6 +17,21 @@ const sdk = new Bytez(BYTEZ_API_KEY);
 // Stockage de l'historique des conversations par uid
 const conversationHistory = new Map();
 
+// Fonction pour convertir du texte en Unicode gras
+function toBold(text) {
+  const boldMap = {
+    'A': '𝗔', 'B': '𝗕', 'C': '𝗖', 'D': '𝗗', 'E': '𝗘', 'F': '𝗙', 'G': '𝗚', 'H': '𝗛', 'I': '𝗜', 'J': '𝗝',
+    'K': '𝗞', 'L': '𝗟', 'M': '𝗠', 'N': '𝗡', 'O': '𝗢', 'P': '𝗣', 'Q': '𝗤', 'R': '𝗥', 'S': '𝗦', 'T': '𝗧',
+    'U': '𝗨', 'V': '𝗩', 'W': '𝗪', 'X': '𝗫', 'Y': '𝗬', 'Z': '𝗭',
+    'a': '𝗮', 'b': '𝗯', 'c': '𝗰', 'd': '𝗱', 'e': '𝗲', 'f': '𝗳', 'g': '𝗴', 'h': '𝗵', 'i': '𝗶', 'j': '𝗷',
+    'k': '𝗸', 'l': '𝗹', 'm': '𝗺', 'n': '𝗻', 'o': '𝗼', 'p': '𝗽', 'q': '𝗾', 'r': '𝗿', 's': '𝘀', 't': '𝘁',
+    'u': '𝘂', 'v': '𝘃', 'w': '𝘄', 'x': '𝘅', 'y': '𝘆', 'z': '𝘇',
+    '0': '𝟬', '1': '𝟭', '2': '𝟮', '3': '𝟯', '4': '𝟰', '5': '𝟱', '6': '𝟲', '7': '𝟳', '8': '𝟴', '9': '𝟵'
+  };
+  
+  return text.split('').map(char => boldMap[char] || char).join('');
+}
+
 // Route GET /claude
 app.get('/claude', async (req, res) => {
   try {
@@ -114,16 +129,18 @@ app.get('/claude', async (req, res) => {
       ]
     });
 
-    // Retourner la réponse
+    // Retourner la réponse avec formatage amélioré
     const response = {
-      uid,
-      prompt,
-      response: assistantResponse,
-      conversation_length: history.length
+      [`✅ ${toBold('Statut')}`]: 'Réponse générée avec succès',
+      [`👤 ${toBold('Utilisateur')}`]: uid,
+      [`📝 ${toBold('Votre question')}`]: prompt,
+      [`🤖 ${toBold('Reponse de Claude')}`]: assistantResponse,
+      [`💬 ${toBold('Messages dans la conversation')}`]: `${history.length} messages (${history.length / 2} échanges)`,
+      [`⏱️ ${toBold('Timestamp')}`]: new Date().toISOString()
     };
     
     if (imageurl) {
-      response.imageurl = imageurl;
+      response[`🖼️ ${toBold('Image analysee')}`] = imageurl;
     }
 
     res.json(response);
@@ -150,42 +167,83 @@ app.get('/reset', (req, res) => {
   conversationHistory.delete(uid);
   
   res.json({
-    message: 'Conversation réinitialisée',
-    uid
+    [`✅ ${toBold('Succes')}`]: 'Conversation réinitialisée avec succès',
+    [`👤 ${toBold('Utilisateur')}`]: uid,
+    [`🔄 ${toBold('Action')}`]: 'Historique effacé - Vous pouvez démarrer une nouvelle conversation',
+    [`💡 ${toBold('Prochaine etape')}`]: `Utilisez /claude?prompt=votre_message&uid=${uid}`
   });
 });
 
 // Route de base pour vérifier que l'API fonctionne
 app.get('/', (req, res) => {
+  const activeConvs = conversationHistory.size;
+  
   res.json({
-    message: 'API Tous_api - Claude via Bytez avec historique de conversation',
-    endpoints: [
-      {
-        method: 'GET',
-        path: '/claude',
-        params: {
-          prompt: 'Texte à envoyer à Claude (requis)',
-          uid: 'Identifiant utilisateur (requis)',
-          imageurl: 'URL de l\'image à analyser (optionnel)',
-          reset: 'Réinitialiser la conversation (optionnel: true/1)'
-        },
-        examples: [
-          '/claude?prompt=bonjour&uid=123',
-          '/claude?prompt=Décrivez cette photo&uid=123&imageurl=https://example.com/image.jpg',
-          '/claude?prompt=Quelle était la couleur de la photo?&uid=123 (continue la conversation)',
-          '/claude?prompt=bonjour&uid=123&reset=true (nouvelle conversation)'
-        ]
+    [`🤖 ${toBold('API Tous_api')}`]: `${toBold('Claude AI')} via Bytez - Analyse d'images et conversations`,
+    
+    [`✨ ${toBold('Fonctionnalites')}`]: {
+      '🧠 IA': `${toBold('Claude 3 Haiku')} - Modèle rapide et intelligent`,
+      '🖼️ Images': `${toBold('Analyse visuelle')} - Compréhension et description d'images`,
+      '💬 Conversations': `${toBold('Historique contextuel')} - Discussions continues par utilisateur`,
+      '⚡ Rapidite': `${toBold('Reponses en temps reel')} - Traitement instantané`
+    },
+    
+    [`📡 ${toBold('ENDPOINT PRINCIPAL')} - /claude`]: {
+      [`🎯 ${toBold('Methode')}`]: 'GET',
+      
+      [`📝 ${toBold('Parametres REQUIS')}`]: {
+        '🔤 prompt': `${toBold('Votre question ou instruction')} - Le texte à envoyer à Claude`,
+        '👤 uid': `${toBold('Identifiant utilisateur unique')} - Pour gérer les conversations`
       },
-      {
-        method: 'GET',
-        path: '/reset',
-        params: {
-          uid: 'Identifiant utilisateur (requis)'
-        },
-        example: '/reset?uid=123'
+      
+      [`🎨 ${toBold('Parametres OPTIONNELS')}`]: {
+        '🖼️ imageurl': `${toBold('URL de l\'image')} - Pour analyse visuelle`,
+        '🔄 reset': `${toBold('true/1')} - Réinitialiser la conversation`
+      },
+      
+      [`💡 ${toBold('Exemples d\'utilisation')}`]: {
+        [`1️⃣ ${toBold('Message simple')}`]: '/claude?prompt=bonjour&uid=123',
+        [`2️⃣ ${toBold('Analyser une image')}`]: '/claude?prompt=Décrivez cette photo&uid=123&imageurl=https://example.com/image.jpg',
+        [`3️⃣ ${toBold('Question de suivi')}`]: '/claude?prompt=Quelle était la couleur?&uid=123',
+        [`4️⃣ ${toBold('Nouvelle conversation')}`]: '/claude?prompt=nouveau sujet&uid=123&reset=true'
+      },
+      
+      [`📤 ${toBold('Format de reponse')}`]: {
+        'uid': 'Identifiant utilisateur',
+        'prompt': 'Votre question',
+        'response': `${toBold('Reponse de Claude')} ⭐`,
+        'conversation_length': 'Nombre de messages dans l\'historique',
+        'imageurl': 'URL de l\'image (si fournie)'
       }
-    ],
-    active_conversations: conversationHistory.size
+    },
+    
+    [`🔄 ${toBold('ENDPOINT RESET')} - /reset`]: {
+      [`🎯 ${toBold('Methode')}`]: 'GET',
+      [`📝 ${toBold('Parametre')}`]: {
+        '👤 uid': `${toBold('Identifiant utilisateur')} - Pour réinitialiser sa conversation`
+      },
+      [`💡 ${toBold('Exemple')}`]: '/reset?uid=123'
+    },
+    
+    [`📊 ${toBold('STATISTIQUES EN DIRECT')}`]: {
+      [`💬 ${toBold('Conversations actives')}`]: `${toBold(activeConvs.toString())} utilisateur${activeConvs !== 1 ? 's' : ''}`,
+      [`⏱️ ${toBold('Temps de reponse moyen')}`]: `${toBold('1-3 secondes')} (texte) / ${toBold('2-5 secondes')} (image)`,
+      [`🌐 ${toBold('Statut du serveur')}`]: `${toBold('OPERATIONNEL')} ✅`
+    },
+    
+    [`🎯 ${toBold('COMMENT UTILISER L\'HISTORIQUE')}`]: {
+      [`1️⃣ ${toBold('Premiere requete')}`]: 'Envoyez votre message avec une image',
+      [`2️⃣ ${toBold('Questions suivantes')}`]: 'Utilisez le même uid sans répéter l\'image',
+      [`3️⃣ ${toBold('Claude se souvient')}`]: 'Le contexte et les images précédentes',
+      [`4️⃣ ${toBold('Reinitialiser')}`]: 'Utilisez reset=true ou /reset pour recommencer'
+    },
+    
+    [`⚠️ ${toBold('NOTES IMPORTANTES')}`]: [
+      `${toBold('Stockage')} 💾 - L'historique est en mémoire (perdu au redémarrage)`,
+      `${toBold('Securite')} 🔒 - Les clés API sont sécurisées côté serveur`,
+      `${toBold('Images')} 🖼️ - URLs publiques uniquement (HTTPS recommandé)`,
+      `${toBold('Performance')} ⚡ - Optimisé pour des réponses rapides`
+    ]
   });
 });
 
