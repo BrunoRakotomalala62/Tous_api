@@ -29,15 +29,25 @@ Le serveur démarre sur le port 5000.
 
 #### GET /claude
 
-Envoie un message à Claude et retourne la réponse.
+Envoie un message à Claude et retourne la réponse. Supporte l'analyse d'images via URL.
 
 **Paramètres requis :**
 - `prompt` : Le texte à envoyer à Claude
 - `uid` : Identifiant utilisateur
 
-**Exemple :**
+**Paramètres optionnels :**
+- `imageurl` : URL de l'image à analyser
+
+**Exemples :**
+
+1. Message texte simple :
 ```
 GET /claude?prompt=bonjour&uid=123
+```
+
+2. Analyse d'image :
+```
+GET /claude?prompt=Décrivez bien cette photo&uid=123&imageurl=https://example.com/photo.jpg
 ```
 
 **Réponse :**
@@ -45,7 +55,8 @@ GET /claude?prompt=bonjour&uid=123
 {
   "uid": "123",
   "prompt": "bonjour",
-  "response": "Réponse de Claude..."
+  "response": "Réponse de Claude...",
+  "imageurl": "https://example.com/photo.jpg"
 }
 ```
 

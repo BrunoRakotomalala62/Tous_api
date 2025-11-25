@@ -17,7 +17,7 @@ const sdk = new Bytez(BYTEZ_API_KEY);
 // Route GET /claude
 app.get('/claude', async (req, res) => {
   try {
-    const { prompt, uid } = req.query;
+    const { prompt, uid, imageurl } = req.query;
 
     // Vérifier que les paramètres sont présents
     if (!prompt) {
@@ -35,11 +35,34 @@ app.get('/claude', async (req, res) => {
     // Choisir le modèle Claude
     const model = sdk.model('anthropic/claude-3-haiku-20240307');
 
+    // Construire le contenu du message
+    let messageContent;
+    
+    if (imageurl) {
+      // Si une URL d'image est fournie, créer un contenu multimodal
+      messageContent = [
+        {
+          type: 'image',
+          source: {
+            type: 'url',
+            url: imageurl
+          }
+        },
+        {
+          type: 'text',
+          text: prompt
+        }
+      ];
+    } else {
+      // Sinon, utiliser juste le texte
+      messageContent = prompt;
+    }
+
     // Envoyer le prompt au modèle
     const { error, output } = await model.run([
       {
         role: 'user',
-        content: prompt
+        content: messageContent
       }
     ]);
 
@@ -51,11 +74,17 @@ app.get('/claude', async (req, res) => {
     }
 
     // Retourner la réponse
-    res.json({
+    const response = {
       uid,
       prompt,
       response: output
-    });
+    };
+    
+    if (imageurl) {
+      response.imageurl = imageurl;
+    }
+
+    res.json(response);
 
   } catch (err) {
     console.error('Erreur:', err);
@@ -76,9 +105,13 @@ app.get('/', (req, res) => {
         path: '/claude',
         params: {
           prompt: 'Texte à envoyer à Claude (requis)',
-          uid: 'Identifiant utilisateur (requis)'
+          uid: 'Identifiant utilisateur (requis)',
+          imageurl: 'URL de l\'image à analyser (optionnel)'
         },
-        example: '/claude?prompt=bonjour&uid=123'
+        examples: [
+          '/claude?prompt=bonjour&uid=123',
+          '/claude?prompt=Décrivez cette photo&uid=123&imageurl=https://example.com/image.jpg'
+        ]
       }
     ]
   });

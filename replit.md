@@ -40,23 +40,43 @@ API Node.js qui utilise Claude (via Bytez.js) pour traiter des requêtes textuel
 Affiche les informations sur l'API et les endpoints disponibles.
 
 ### GET /claude
-Endpoint principal qui envoie un prompt à Claude et retourne la réponse.
+Endpoint principal qui envoie un prompt à Claude et retourne la réponse. Supporte l'analyse d'images.
 
 **Paramètres requis :**
 - `prompt` : Texte à envoyer à Claude
 - `uid` : Identifiant utilisateur
 
-**Exemple d'utilisation :**
+**Paramètres optionnels :**
+- `imageurl` : URL de l'image à analyser
+
+**Exemples d'utilisation :**
+
+1. Message texte simple :
 ```
 GET /claude?prompt=bonjour&uid=123
 ```
 
-**Réponse type :**
+2. Analyse d'image avec description :
+```
+GET /claude?prompt=Décrivez bien cette photo&uid=123&imageurl=https://example.com/photo.jpg
+```
+
+**Réponse type (texte simple) :**
 ```json
 {
   "uid": "123",
   "prompt": "bonjour",
   "response": "Bonjour ! Comment puis-je vous aider aujourd'hui ?"
+}
+```
+
+**Réponse type (avec image) :**
+```json
+{
+  "uid": "123",
+  "prompt": "Décrivez bien cette photo",
+  "imageurl": "https://example.com/photo.jpg",
+  "response": "Cette photo montre..."
 }
 ```
 
