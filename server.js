@@ -87,24 +87,29 @@ app.get('/claude', async (req, res) => {
     const messages = [...history, userMessage];
 
     // Envoyer l'historique complet au modèle
+    console.log(`[${uid}] Envoi de ${messages.length} messages à Claude...`);
     const { error, output } = await model.run(messages);
 
     if (error) {
+      console.error(`[${uid}] Erreur from Claude:`, error);
       return res.status(500).json({
         error: 'Erreur lors de l\'appel à Claude',
         details: error
       });
     }
 
+    // Extraire le contenu de la réponse (output est un objet {role, content})
+    const assistantResponse = typeof output === 'string' ? output : output.content;
+    console.log(`[${uid}] Réponse reçue de Claude (${assistantResponse.length} chars)`);
+
     // Ajouter le message utilisateur et la réponse à l'historique
-    // Normaliser la réponse au format tableau aussi
     history.push(userMessage);
     history.push({
       role: 'assistant',
       content: [
         {
           type: 'text',
-          text: output
+          text: assistantResponse
         }
       ]
     });
@@ -113,7 +118,7 @@ app.get('/claude', async (req, res) => {
     const response = {
       uid,
       prompt,
-      response: output,
+      response: assistantResponse,
       conversation_length: history.length
     };
     
